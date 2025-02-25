@@ -39,3 +39,4 @@ function resizeImage(width, height) {
     downloadButton.classList.remove("hidden");
     downloadButton.href = canvas.toDataURL("image/png");
 }
+
