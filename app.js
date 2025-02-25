@@ -20,11 +20,14 @@ imageInput.addEventListener("change", function () {
     }
 });
 
-Object.keys(resizeButtons).forEach((platform) => {
-    document.getElementById(`resize-button-${platform}`).addEventListener("click", function () {
-        resizeImage(resizeButtons[platform][0], resizeButtons[platform][1]);
+// Ensure the image is loaded before resizing
+uploadedImage.onload = function () {
+    Object.keys(resizeButtons).forEach((platform) => {
+        document.getElementById(`resize-button-${platform}`).addEventListener("click", function () {
+            resizeImage(resizeButtons[platform][0], resizeButtons[platform][1]);
+        });
     });
-});
+};
 
 function resizeImage(width, height) {
     const canvas = document.createElement("canvas");
@@ -32,11 +35,16 @@ function resizeImage(width, height) {
 
     canvas.width = width;
     canvas.height = height;
-    
-    ctx.drawImage(uploadedImage, 0, 0, width, height);
-    
-    // Show the download button
-    downloadButton.classList.remove("hidden");
-    downloadButton.href = canvas.toDataURL("image/png");
-}
 
+    // Ensure the image is fully loaded before drawing
+    ctx.drawImage(uploadedImage, 0, 0, width, height);
+
+    // Create a new image element to display resized image
+    const resizedImage = document.createElement("img");
+    resizedImage.src = canvas.toDataURL("image/png");
+    document.body.appendChild(resizedImage);
+
+    // Show the download button and set the image URL for download
+    downloadButton.classList.remove("hidden");
+    downloadButton.href = resizedImage.src;
+}
